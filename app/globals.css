@@ -1,26 +1,184 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------ */
+/* ASIMA SMRDDHI — DESIGN TOKENS (v1.0)                                */
+/* Source of truth: DESIGN.md                                         */
+/* Do not hardcode hex values or px sizes elsewhere in the codebase — */
+/* always reference these tokens.                                     */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* ---- Brand colors ---- */
+  --color-brand-maroon: #7E1B24;
+  --color-brand-maroon-hover: #6B171F;
+  --color-brand-maroon-active: #58131A;
+  --color-brand-gold: #C59B4B;
+  --color-brand-green: #24462F;
+  --color-brand-ivory: #FBF9F5;
+  --color-brand-charcoal: #1C1917;
+
+  /* ---- Short-name aliases (so bg-maroon, text-ivory etc. also work) ---- */
+  --color-maroon: var(--color-brand-maroon);
+  --color-maroon-hover: var(--color-brand-maroon-hover);
+  --color-maroon-active: var(--color-brand-maroon-active);
+  --color-gold: var(--color-brand-gold);
+  --color-green: var(--color-brand-green);
+  --color-ivory: var(--color-brand-ivory);
+  --color-charcoal: var(--color-brand-charcoal);
+
+  /* ---- Supporting neutrals ---- */
+  --color-earth: #A9633D;
+  --color-warm-gray: #8A8380;
+  --color-soft-beige: #EFE7DA;
+
+  /* ---- Semantic colors (deliberately distinct from brand) ---- */
+  --color-success: #1E7A46;
+  --color-warning: #B8760A;
+  --color-error: #B3261E;
+  --color-info: #2563AC;
+
+  /* ---- Surfaces ---- */
+  --color-background: var(--color-brand-ivory);
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
+  --color-surface-muted: var(--color-soft-beige);
+  --color-surface-inverse: var(--color-brand-charcoal);
+  --color-border-default: #E4DCD0;
+  --color-border-subtle: #EFE9E0;
+  --color-border-strong: #C9BFAF;
+  --color-border-focus: var(--color-brand-maroon);
+
+  /* ---- Typography families ---- */
+  /* These point at the CSS variables next/font injects in layout.tsx    */
+  /* (--font-playfair / --font-jakarta), so font-editorial / font-interface */
+  /* actually use the optimized, self-hosted font — not a second,        */
+  /* unoptimized lookup of the same name.                                */
+  --font-editorial: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-interface: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Typography scale ---- */
+  /* Sourced from the approved Stitch export's shared token system        */
+  /* (consistent across every screen variant). Font-weight isn't a        */
+  /* Tailwind v4 paired-token field, so apply it as a utility alongside — */
+  /* the correct weight for each size is noted in the comment.            */
+  --text-display: 3.5rem;                /* 56px, weight 600 */
+  --text-display--line-height: 4.25rem;  /* 68px */
+  --text-display--letter-spacing: -0.01em;
+
+  --text-h1: 2.5rem;                     /* 40px, weight 600 */
+  --text-h1--line-height: 3.125rem;      /* 50px */
+  --text-h1--letter-spacing: -0.01em;
+
+  --text-h2: 2rem;                       /* 32px, weight 500 */
+  --text-h2--line-height: 2.5rem;        /* 40px */
+  --text-h2--letter-spacing: 0em;
+
+  --text-h3: 1.5rem;                     /* 24px, weight 500 */
+  --text-h3--line-height: 2rem;          /* 32px */
+  --text-h3--letter-spacing: 0.01em;
+
+  --text-h4: 1.25rem;                    /* 20px, weight 500 */
+  --text-h4--line-height: 1.75rem;       /* 28px */
+  --text-h4--letter-spacing: 0.01em;
+
+  --text-body-lg: 1.125rem;              /* 18px, weight 400 */
+  --text-body-lg--line-height: 1.75rem;  /* 28px */
+  --text-body-lg--letter-spacing: 0.01em;
+
+  --text-body: 0.9375rem;                /* 15px, weight 400 */
+  --text-body--line-height: 1.5rem;      /* 24px */
+  --text-body--letter-spacing: 0.01em;
+
+  --text-body-sm: 0.8125rem;             /* 13px, weight 400 */
+  --text-body-sm--line-height: 1.25rem;  /* 20px */
+  --text-body-sm--letter-spacing: 0.015em;
+
+  --text-caption: 0.625rem;              /* 10px, weight 700 */
+  --text-caption--line-height: 0.875rem; /* 14px */
+  --text-caption--letter-spacing: 0.16em;
+
+  --text-label: 0.75rem;                 /* 12px, weight 600 */
+  --text-label--line-height: 1rem;       /* 16px */
+  --text-label--letter-spacing: 0.12em;
+
+  --text-nav: 0.875rem;                  /* 14px, weight 600 */
+  --text-nav--line-height: 1.25rem;      /* 20px */
+  --text-nav--letter-spacing: 0.08em;
+
+  /* Price deliberately does NOT reuse a Stitch headline size. Several   */
+  /* Stitch screens rendered prices in the editorial serif — DESIGN.md   */
+  /* Section 8.3 explicitly requires prices to use the interface sans,   */
+  /* so this token follows DESIGN.md rather than those screens.          */
+  --text-price: 1.25rem;                 /* 20px, weight 700, font-interface */
+  --text-price--line-height: 1.75rem;    /* 28px */
+
+  /* ---- Motion ---- */
+  /* Timing pulled from actual usage across the Stitch export:           */
+  /* transition-colors/transition-all at 300ms was the dominant pattern  */
+  /* (450+ instances), 200ms for tap/press feedback, 500ms for larger    */
+  /* reveals. No custom easing curves were used beyond Tailwind's        */
+  /* defaults and occasional ease-out.                                   */
+  --duration-fast: 200ms;   /* button/control press feedback */
+  --duration-base: 300ms;   /* default hover/interactive transitions */
+  --duration-slow: 500ms;   /* larger reveals, image/panel transitions */
+
+  /* ---- Spacing scale ---- */
+  --spacing-1: 0.25rem;  /* 4px */
+  --spacing-2: 0.5rem;   /* 8px */
+  --spacing-3: 0.75rem;  /* 12px */
+  --spacing-4: 1rem;     /* 16px */
+  --spacing-5: 1.25rem;  /* 20px */
+  --spacing-6: 1.5rem;   /* 24px */
+  --spacing-8: 2rem;     /* 32px */
+  --spacing-10: 2.5rem;  /* 40px */
+  --spacing-12: 3rem;    /* 48px */
+  --spacing-16: 4rem;    /* 64px */
+  --spacing-20: 5rem;    /* 80px */
+  --spacing-24: 6rem;    /* 96px */
+
+  /* ---- Radius ---- */
+  --radius-control: 4px;   /* compact controls */
+  --radius-card: 8px;      /* cards, panels, inputs */
+  --radius-overlay: 12px;  /* modals, larger overlays */
+  --radius-pill: 999px;    /* tags, status badges only */
+
+  /* ---- Shadows ---- */
+  --shadow-subtle: 0 1px 2px rgba(28, 25, 23, 0.06);
+  --shadow-elevated: 0 4px 16px rgba(28, 25, 23, 0.10);
+  --shadow-overlay: 0 12px 40px rgba(28, 25, 23, 0.18);
+
+  /* ---- Breakpoints ---- */
+  --breakpoint-mobile: 30rem;   /* 480px */
+  --breakpoint-tablet: 48rem;   /* 768px */
+  --breakpoint-desktop: 64rem;  /* 1024px */
+  --breakpoint-large: 80rem;    /* 1280px */
+
+  /* ---- Container ---- */
+  --container-max: 80rem; /* 1280px */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ------------------------------------------------------------------ */
+/* Base element defaults                                              */
+/* ------------------------------------------------------------------ */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-brand-charcoal);
+  font-family: var(--font-interface);
+  font-size: var(--text-body);
+  line-height: 1.6;
+}
+
+h1, h2, h3, .font-editorial {
+  font-family: var(--font-editorial);
+}
+
+/* Respect reduced-motion preference site-wide */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
